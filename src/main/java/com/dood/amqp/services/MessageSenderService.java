@@ -15,4 +15,8 @@ public class MessageSenderService {
     public void sendSimpleQueueMesssage(String simpleMessage) {
         rabbitTemplate.convertAndSend(AmqpConfig.SIMPLE_RECEIVER_QUEUE, simpleMessage);
     }
+
+    public void sendMessageAwareMessage(String simpleMessage) {
+        rabbitTemplate.convertAndSend(AmqpConfig.MESSAGE_AWARE_RECEIVER_QUEUE, simpleMessage);
+    }
 }

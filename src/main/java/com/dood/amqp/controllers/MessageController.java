@@ -20,4 +20,9 @@ public class MessageController {
     public void sendSimpleTextMessageQueue(@RequestParam String message) {
         messageSenderService.sendSimpleQueueMesssage(message);
     }
+
+    @RequestMapping(value = "/sendMessageAwareQueue", method = RequestMethod.POST)
+    public void sendMessageAwareQueue(@RequestParam String message) {
+        messageSenderService.sendMessageAwareMessage(message);
+    }
 }

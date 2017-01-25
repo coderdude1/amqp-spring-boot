@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 /**
  * Shows off a receiver that implements the MessageListeneer interface
  */
-@Service
+@Service//componemnt or service?  prov comp?
 public class MessageAwareReceiver implements MessageListener{
     private static final Logger LOG = LoggerFactory.getLogger(MessageAwareReceiver.class);
 

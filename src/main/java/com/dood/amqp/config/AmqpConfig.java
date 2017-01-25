@@ -1,5 +1,6 @@
 package com.dood.amqp.config;
 
+import com.dood.amqp.receivers.MessageAwareReceiver;
 import com.dood.amqp.receivers.SimpleReceiver;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
@@ -8,6 +9,7 @@ import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
+import org.springframework.amqp.rabbit.listener.adapter.MessagingMessageListenerAdapter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -34,28 +36,60 @@ public class AmqpConfig {
     }
 
     @Bean
+    TopicExchange messageAwareReceiverExchange() {
+        return new TopicExchange(MESSAGE_AWARE_RECEIVER_EXCHANGE);
+    }
+
+    @Bean
+    Binding bindMessageAwareReceiver(Queue messageAwareReceiverQueue,
+                                     TopicExchange messageAwareReceiverExchange) {
+        return BindingBuilder.bind(messageAwareReceiverQueue).to(messageAwareReceiverExchange)
+                .with(MESSAGE_AWARE_RECEIVER_QUEUE);
+    }
+
+    @Bean
     Binding bindSimpleReceiver(Queue simpleReceiverQueue, TopicExchange simpleReceiverExchange) {
         return BindingBuilder.bind(simpleReceiverQueue).to(simpleReceiverExchange)
                 .with(SIMPLE_RECEIVER_QUEUE);
     }
 
+    //currently don't know if I should create different connection factores, proably
+    //TODO refactor this into 2 seperate config classes, one for each queue/exchange/container
     @Bean
-    SimpleMessageListenerContainer container(ConnectionFactory connectionFactory,
-                                             MessageListenerAdapter listenerAdapter) {
-        SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
-        container.setConnectionFactory(connectionFactory);
-        container.setQueueNames(SIMPLE_RECEIVER_QUEUE);
-        container.setMessageListener(listenerAdapter);
-//        container.setMessageConverter(jsonMessageConverter());
-        return container;
+    SimpleMessageListenerContainer simpleReceiverContainer(ConnectionFactory connectionFactory,
+                                             MessageListenerAdapter simpleReceiverListenerAdapter) {
+        return getSimpleMessageListenerContainer(connectionFactory, simpleReceiverListenerAdapter,
+                SIMPLE_RECEIVER_QUEUE);
     }
 
     /**
      * This allows us to map a pojo method as a reciever of a message
      */
     @Bean
-    MessageListenerAdapter listenerAdapter(SimpleReceiver simpleReceiver) {
+    MessageListenerAdapter simpleReceiverListenerAdapter(SimpleReceiver simpleReceiver) {
         return new MessageListenerAdapter(simpleReceiver, "receiveMessage");
+    }
+
+    @Bean
+    SimpleMessageListenerContainer messageAwareContainer(ConnectionFactory connectionFactory,
+                                             MessageListenerAdapter messageAwareListenerAdapater) {
+        return getSimpleMessageListenerContainer(connectionFactory, messageAwareListenerAdapater,
+                MESSAGE_AWARE_RECEIVER_QUEUE);
+    }
+
+    private SimpleMessageListenerContainer getSimpleMessageListenerContainer(ConnectionFactory connectionFactory,
+                                                                             MessageListenerAdapter messageAwareListenerAdapater,
+                                                                             String queueName) {
+        SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
+        container.setConnectionFactory(connectionFactory);
+        container.setQueueNames(queueName);
+        container.setMessageListener(messageAwareListenerAdapater);
+//        container.setMessageConverter(jsonMessageConverter());
+        return container;
+    }
+
+    @Bean MessageListenerAdapter messageAwareListenerAdapater(MessageAwareReceiver messageAwareReceiver) {
+        return new MessageListenerAdapter(messageAwareReceiver);
     }
 
     //If this is uncommented, it will break the autoinjected RabbitTemplate in
