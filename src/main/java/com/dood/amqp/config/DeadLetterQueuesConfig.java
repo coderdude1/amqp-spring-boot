@@ -1,7 +1,14 @@
 package com.dood.amqp.config;
 
-import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
+import com.dood.amqp.receivers.MessageAwareReceiver;
+import com.dood.amqp.receivers.MessageAwareThatThrowsBarfsToDlx;
+import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.BindingBuilder;
+import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
+import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
+import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,27 +16,20 @@ import org.springframework.context.annotation.Configuration;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.springframework.amqp.core.Queue;
-
 @Configuration
 public class DeadLetterQueuesConfig {
 
-    public static final String QUEUE_WITH_A_DLX = "quueue-with-a-dlx-ttl";
+    public static final String QUEUE_WITH_A_DLX = "queue-with-a-dlx-ttl";
     public static final String QUEUE_WITH_A_DLX_DLX = QUEUE_WITH_A_DLX + "-DLX";
+    public static final String SIMPLE_POJO_PROGRAMMATIC_DLX = "simplePojoProgrammaticDlx";
+    public static final String DLX_FOR_SIMPLE_POJO_PROGRAMTTIC_DLX = "dlxForSimpleProgrammaticDlx";
+    public static final String PROGRAMATTIC_ERROR_EXCHANGE = "ProgramatticErrorExchange";
 
     @Autowired
     private ConnectionFactory cachingConnectionFactory;
 
-    // Setting the annotation listeners to use the jackson2JsonMessageConverter
     @Bean
-    public SimpleRabbitListenerContainerFactory rabbitListenerContainerFactory() {
-        SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory();
-        factory.setConnectionFactory(cachingConnectionFactory);
-//        factory.setMessageConverter(jackson2JsonMessageConverter());
-        return factory;
-    }
-    @Bean
-    Queue simplePojoReceiverWithDlxTTL() {
+    Queue queueWithDlxTimeToLive() {
         Map<String, Object> args = new HashMap<String, Object>();
 
         // The default exchange
@@ -42,7 +42,48 @@ public class DeadLetterQueuesConfig {
     }
 
     @Bean
-    Queue simplePojoReceiverDlx() {
+    Queue dlxQueueForTtlDlx() {
         return new Queue(QUEUE_WITH_A_DLX_DLX);
+    }
+
+    @Bean
+    Queue simplePojoProgrammaticDlx() {
+        Map<String, Object> args = new HashMap<String, Object>();
+
+        // The default exchange
+        args.put("x-dead-letter-exchange", "");
+        // Route to the incoming queue when the exception occurs
+        args.put("x-dead-letter-routing-key", DLX_FOR_SIMPLE_POJO_PROGRAMTTIC_DLX);
+        return new Queue(SIMPLE_POJO_PROGRAMMATIC_DLX, false, false, false, args);
+    }
+
+    @Bean
+    Queue dlxQueueForSimplePojoPrograttticDlx() {
+        return new Queue(DLX_FOR_SIMPLE_POJO_PROGRAMTTIC_DLX);
+    }
+
+    @Bean
+    TopicExchange getProgrammaticFailureExchange() {
+        return new TopicExchange(PROGRAMATTIC_ERROR_EXCHANGE);
+    }
+
+    //bind the queue to the exchange
+    @Bean
+    Binding bindSimpleReceiver(Queue simpleReceiverQueue, TopicExchange simpleReceiverExchange) {
+        return BindingBuilder.bind(simpleReceiverQueue).to(simpleReceiverExchange)
+                .with(SIMPLE_POJO_PROGRAMMATIC_DLX);
+    }
+
+    //note the type is the class of the receiver, spring does the rest
+    @Bean
+    MessageListenerAdapter programaticErrorToDlxAdapter(MessageAwareThatThrowsBarfsToDlx messageAwareThatThrowsBarfsToDlx) {
+        return new MessageListenerAdapter(messageAwareThatThrowsBarfsToDlx);
+    }
+
+    @Bean
+    SimpleMessageListenerContainer simpleReceiverContainer(ConnectionFactory connectionFactory,
+                                                           MessageListenerAdapter programaticErrorToDlxAdapter) {
+        return AmqpConfig.getSimpleMessageListenerContainer(connectionFactory, programaticErrorToDlxAdapter,
+                SIMPLE_POJO_PROGRAMMATIC_DLX);
     }
 }

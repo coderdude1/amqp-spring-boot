@@ -77,7 +77,7 @@ public class AmqpConfig {
                 MESSAGE_AWARE_RECEIVER_QUEUE);
     }
 
-    private SimpleMessageListenerContainer getSimpleMessageListenerContainer(ConnectionFactory connectionFactory,
+    public static SimpleMessageListenerContainer getSimpleMessageListenerContainer(ConnectionFactory connectionFactory,
                                                                              MessageListenerAdapter messageAwareListenerAdapater,
                                                                              String queueName) {
         SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
