@@ -1,4 +1,14 @@
 #AMQP with spring
+Experiments with spring boot/amqp/rabbitmq
+
+# Receivers
+AMQP and spring support multiple ways to declare receivers.  I'll try several
+different ways of this, such as
+  1. Simple POJO that is wired via config as a receiver
+  2. Class that implements the MessageListener interface
+  3. Class that implements the ChannelAwareMessageListener
+
+I'll also experiment with some of the other features such as dead letter queues, etc
 
 #random stuff
 if I use the rabbitmq send to a queue option, I need to add property

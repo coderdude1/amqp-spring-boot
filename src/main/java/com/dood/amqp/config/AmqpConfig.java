@@ -20,7 +20,7 @@ public class AmqpConfig {
     public static final String TOPIC_EXCAHNGE = "topic-exchange";
 
     @Bean
-    Queue queue() {
+    Queue simpleReceiverQueue() {
         return new Queue(QUEUE_NAME, false);
     }
 
@@ -30,8 +30,8 @@ public class AmqpConfig {
     }
 
     @Bean
-    Binding binding(Queue queue, TopicExchange exchange) {
-        return BindingBuilder.bind(queue).to(exchange).with(QUEUE_NAME);
+    Binding binding(Queue simpleReceiverQueue, TopicExchange exchange) {
+        return BindingBuilder.bind(simpleReceiverQueue).to(exchange).with(QUEUE_NAME);
     }
 
     @Bean
@@ -53,6 +53,9 @@ public class AmqpConfig {
         return new MessageListenerAdapter(simpleReceiver, "receiveMessage");
     }
 
+    //If this is uncommented, it will break the autoinjected RabbitTemplate in
+    //simpleReceiver.  YOu may need to declare a restTemplate that uses the
+    //SImpleConverter and manually inject that into that reveiver
 //    @Bean
 //    public MessageConverter jsonMessageConverter(){
 //        return new Jackson2JsonMessageConverter();
