@@ -30,7 +30,7 @@ public class AmqpConfig {
     }
 
     @Bean
-    Binding binding(Queue simpleReceiverQueue, TopicExchange exchange) {
+    Binding bindSimpleReceiver(Queue simpleReceiverQueue, TopicExchange exchange) {
         return BindingBuilder.bind(simpleReceiverQueue).to(exchange).with(QUEUE_NAME);
     }
 
