@@ -35,3 +35,19 @@ yet on the producer, nor have I got it to work yet from the rabbitMQ management 
 ## SimpleReceiverWithTTL DLX
 this queue doesn't have a receiver, just shows how a mesage can be pushed to the DLX after it's TTL has expired.
 The DLX queue doesn't have a receiver either.  Use RabbitMQ management console to push messages on the queue
+
+
+# Some reading links I found that helped
+
+TTL DLX https://github.com/cl4r1ty/spring-rabbitmq-dead-letter
+
+JSON releated links
+http://memorynotfound.com/produce-consume-rabbitmq-spring-json-message-queue/
+http://bernhardwenzel.com/blog/2015/04/10/post-spring-boot-rabbitmq/
+http://dev.macero.es/2016/10/23/produce-and-consume-json-messages-with-spring-boot-amqp/
+
+How the various converters work
+http://docs.spring.io/spring-amqp/reference/htmlsingle/#_introduction_9
+
+Getting a programttic error to end up in the DLX
+http://stackoverflow.com/questions/28286334/spring-amqp-nothing-showing-up-in-dead-letter-queue

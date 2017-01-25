@@ -12,7 +12,7 @@ import java.util.Map;
 import org.springframework.amqp.core.Queue;
 
 @Configuration
-public class DeadLetterQueues {
+public class DeadLetterQueuesConfig {
 
     public static final String QUEUE_WITH_A_DLX = "quueue-with-a-dlx-ttl";
     public static final String QUEUE_WITH_A_DLX_DLX = QUEUE_WITH_A_DLX + "-DLX";
