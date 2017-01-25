@@ -8,30 +8,34 @@ import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
-import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
-import org.springframework.amqp.support.converter.JsonMessageConverter;
-import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class AmqpConfig {
-    public static final String QUEUE_NAME = "simple-receiver";
-    public static final String TOPIC_EXCAHNGE = "topic-exchange";
+    public static final String SIMPLE_RECEIVER_QUEUE = "simple-receiver";
+    public static final String SIMPLE_RECEIVER_TOPIC_EXCAHNGE = "simple-receiver-topic-exchange";
+    public static final String MESSAGE_AWARE_RECEIVER_QUEUE = "messageAwareReceiverQueue";
 
     @Bean
     Queue simpleReceiverQueue() {
-        return new Queue(QUEUE_NAME, false);
+        return new Queue(SIMPLE_RECEIVER_QUEUE, false);
     }
 
     @Bean
     TopicExchange exchange() {
-        return new TopicExchange(TOPIC_EXCAHNGE);
+        return new TopicExchange(SIMPLE_RECEIVER_TOPIC_EXCAHNGE);
     }
 
+
     @Bean
-    Binding bindSimpleReceiver(Queue simpleReceiverQueue, TopicExchange exchange) {
-        return BindingBuilder.bind(simpleReceiverQueue).to(exchange).with(QUEUE_NAME);
+    Queue messageAwareReceiverQueue() {
+        return new Queue(MESSAGE_AWARE_RECEIVER_QUEUE, false);
+    }
+    @Bean
+    Binding bindSimpleReceiver(Queue simpleReceiverQueue, TopicExchange simpleReceiverExchange) {
+        return BindingBuilder.bind(simpleReceiverQueue).to(simpleReceiverExchange)
+                .with(SIMPLE_RECEIVER_QUEUE);
     }
 
     @Bean
@@ -39,7 +43,7 @@ public class AmqpConfig {
                                              MessageListenerAdapter listenerAdapter) {
         SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
-        container.setQueueNames(QUEUE_NAME);
+        container.setQueueNames(SIMPLE_RECEIVER_QUEUE);
         container.setMessageListener(listenerAdapter);
 //        container.setMessageConverter(jsonMessageConverter());
         return container;

@@ -13,6 +13,6 @@ public class MessageSenderService {
     }
 
     public void sendSimpleQueueMesssage(String simpleMessage) {
-        rabbitTemplate.convertAndSend(AmqpConfig.QUEUE_NAME, simpleMessage);
+        rabbitTemplate.convertAndSend(AmqpConfig.SIMPLE_RECEIVER_QUEUE, simpleMessage);
     }
 }
