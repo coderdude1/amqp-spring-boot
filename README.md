@@ -31,3 +31,7 @@ that later
 ## MessageListener receiver
 Got it to work pretty straight forward, not sure how to set the headers/properties
 yet on the producer, nor have I got it to work yet from the rabbitMQ management console
+
+## SimpleReceiverWithTTL DLX
+this queue doesn't have a receiver, just shows how a mesage can be pushed to the DLX after it's TTL has expired.
+The DLX queue doesn't have a receiver either.  Use RabbitMQ management console to push messages on the queue
