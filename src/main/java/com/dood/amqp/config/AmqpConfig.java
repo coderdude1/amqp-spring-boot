@@ -16,6 +16,7 @@ public class AmqpConfig {
     public static final String SIMPLE_RECEIVER_QUEUE = "simple-receiver";
     public static final String SIMPLE_RECEIVER_TOPIC_EXCAHNGE = "simple-receiver-topic-exchange";
     public static final String MESSAGE_AWARE_RECEIVER_QUEUE = "messageAwareReceiverQueue";
+    public static final String MESSAGE_AWARE_RECEIVER_EXCHANGE = "message-aware-receiver-exchange";
 
     @Bean
     Queue simpleReceiverQueue() {
@@ -23,15 +24,15 @@ public class AmqpConfig {
     }
 
     @Bean
-    TopicExchange exchange() {
+    TopicExchange simpleReceiverExchange() {
         return new TopicExchange(SIMPLE_RECEIVER_TOPIC_EXCAHNGE);
     }
-
 
     @Bean
     Queue messageAwareReceiverQueue() {
         return new Queue(MESSAGE_AWARE_RECEIVER_QUEUE, false);
     }
+
     @Bean
     Binding bindSimpleReceiver(Queue simpleReceiverQueue, TopicExchange simpleReceiverExchange) {
         return BindingBuilder.bind(simpleReceiverQueue).to(simpleReceiverExchange)
