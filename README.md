@@ -7,6 +7,8 @@ different ways of this, such as
   1. Simple POJO that is wired via config as a receiver
   2. Class that implements the MessageListener interface
   3. Class that implements the ChannelAwareMessageListener
+  4. RabbitMQ annotations?
+  5. ?
 
 I'll also experiment with some of the other features such as dead letter queues, etc
 
