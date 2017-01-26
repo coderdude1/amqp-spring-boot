@@ -30,6 +30,18 @@ The ones currently supported are
   4. fanout - broadcast to all queues that it knows about, regardless of routing key.  Sorta kinda sounds like JMS topics?
   5. default - when we don't specify an exchange, known as the nameless exchange, or "", uses the queue name as the key
 
+## Queues
+Stores messages that are consumed by applications.  Shares some properties with exchanges but has some additional props
+1. Name
+2. Duarble - not lost if broker is restarted)
+3. Exclusive - used by one connection only, and deleted when connection is gone
+4. auto-delete - queue is deleted when last consumer is gone
+5. args - some brokers use ti implemnent additional features like TTL (dead letter?)
+
+## Bindings
+Rules that exchanges (and other things?) use to route messages to queues.  There can be 0 or more ways to reach
+a destination
+
 ## Receivers
 AMQP and spring support multiple ways to declare receivers.  I'll try several
 different ways of this, such as
