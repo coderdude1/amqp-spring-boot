@@ -14,8 +14,8 @@ One of the options for a queue is if a message requires acknowledgement.  I thin
 #RabbitMQ basics
 ## Messages
 Messages consist of two pieces
-1.  attributes  - metadata about the message, such as content-type, encoding, routing key, persistent, priority, etc.  Used by RabbitMQ for routing and processing
-2.  payload - actual message (object, keys/pointers, etc)
+  1.  attributes  - metadata about the message, such as content-type, encoding, routing key, persistent, priority, etc.  Used by RabbitMQ for routing and processing
+  2.  payload - actual message (object, keys/pointers, etc)
 
 An important attribute is the Routing Key, which is used by most exchanges to determine how to route the message (ie to another exchange, or a queue(s)
 
@@ -35,11 +35,11 @@ The ones currently supported are
 
 ## Queues
 Stores messages that are consumed by applications.  Shares some properties with exchanges but has some additional props
-1. Name
-2. Duarble - not lost if broker is restarted)
-3. Exclusive - used by one connection only, and deleted when connection is gone
-4. auto-delete - queue is deleted when last consumer is gone
-5. args - some brokers use ti implemnent additional features like TTL (dead letter?)
+  1. Name
+  2. Duarble - not lost if broker is restarted)
+  3. Exclusive - used by one connection only, and deleted when connection is gone
+  4. auto-delete - queue is deleted when last consumer is gone
+  5. args - some brokers use ti implemnent additional features like TTL (dead letter?)
 
 ## Bindings
 Rules that exchanges (and other things?) use to route messages to queues.  There can be 0 or more ways to reach a destination
