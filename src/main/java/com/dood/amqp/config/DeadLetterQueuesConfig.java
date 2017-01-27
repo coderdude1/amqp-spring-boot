@@ -36,7 +36,7 @@ public class DeadLetterQueuesConfig {
         // The default exchange
         args.put(X_DEAD_LETTER_EXCHANGE_KEY, "");//using the defalt exchange, requires a routing key
         // Route to the incoming queue when the TTL occurs
-        args.put(X_DEAD_LETTER_EXCHANGE_KEY, QUEUE_WITH_A_DLX_DLX);
+        args.put("x-dead-letter-routing-key", QUEUE_WITH_A_DLX_DLX);
         // TTL 5 seconds
         args.put("x-message-ttl", 5000);//try without this for a test
         return new Queue(QUEUE_WITH_A_DLX, false, false, false, args);

@@ -2,6 +2,7 @@ package com.dood.amqp.services;
 
 import com.dood.amqp.config.AmqpConfig;
 import com.dood.amqp.config.AmqpExceptionsConfig;
+import com.dood.amqp.config.MqChannelReceiverConfig;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
@@ -23,5 +24,9 @@ public class MessageSenderService {
 
     public void sendMessageAwareExceptionMessage(String message) {
         rabbitTemplate.convertAndSend(AmqpExceptionsConfig.MESSAGE_AWARE_THAT_THROWS_EXCEPTION_QUEUE, message);
+    }
+
+    public void sendChannelAwareExceptionMessage(String message) {
+        rabbitTemplate.convertAndSend(MqChannelReceiverConfig.CHANNEL_RECEIVER_QUEUE, message);
     }
 }

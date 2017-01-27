@@ -92,9 +92,25 @@ The DLX queue doesn't have a receiver either.  Use RabbitMQ management console t
 This receiver tosses an unhandled RuntimeException.  The message will end up getting put back into the queue, which results in it going back into the receiver, infinitly in the example since it always tosses the exception.  I bet this is configurable, and that the defualt for the queue is ACK required, which causes it to resubmit since we never ACK the message.
 
 Things to look at
-1. disable ACK, no DLQ, message lost?
-2. ACK enabled, DLQ, infinite loop?
-3. configure retry params.  not sure what happens
+  1. disable ACK, no DLQ, message lost?
+  2. ACK enabled, DLQ, infinite loop?
+  3. Integration Testing - https://tamasgyorfi.net/2016/04/21/writing-integration-tests-for-rabbitmq-based-components/
+  4. configure retry params.  not sure what happens.  In spring config I found this
+```
+spring
+  rabbitmq:
+      listener:
+        retry:
+          enabled: false
+          initial-interval: 2000
+          max-attempts: 2
+          multiplier: 1.5
+          max-interval: 5000
+```
+
+Some more DLX stuff to look at
+  1.  using a custom exchange vs the default (ie the args.put("x-dead-letter-exchange", REJECTED_EXCHANGE);
+  2.  routing to one of several DLX's based upon the failure
 
 # Random stuff and observations
 It looks like a container can only contain one consumer class, but can contain multiple queues.  It will send any
