@@ -25,4 +25,9 @@ public class MessageController {
     public void sendMessageAwareQueue(@RequestParam String message) {
         messageSenderService.sendMessageAwareMessage(message);
     }
+
+    @RequestMapping(value = "/sendMessageAwareExceptionQueue", method = RequestMethod.POST)
+    public void sendMessageAwareExceptionQueue(@RequestParam String message) {
+        messageSenderService.sendMessageAwareExceptionMessage(message);
+    }
 }

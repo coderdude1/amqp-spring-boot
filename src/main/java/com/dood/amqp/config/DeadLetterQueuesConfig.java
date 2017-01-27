@@ -1,6 +1,5 @@
 package com.dood.amqp.config;
 
-import com.dood.amqp.receivers.MessageAwareReceiver;
 import com.dood.amqp.receivers.MessageAwareThatThrowsBarfsToDlx;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
@@ -24,18 +23,20 @@ public class DeadLetterQueuesConfig {
     public static final String SIMPLE_POJO_PROGRAMMATIC_DLX = "simplePojoProgrammaticDlx";
     public static final String DLX_FOR_SIMPLE_POJO_PROGRAMTTIC_DLX = "dlxForSimpleProgrammaticDlx";
     public static final String PROGRAMATTIC_ERROR_EXCHANGE = "ProgramatticErrorExchange";
+    public static final String DLX_QUEUE_FOR_RUNTIME_EXCEPTION = "dlx-queue-for-runtime-exception";
+    public static final String X_DEAD_LETTER_EXCHANGE_KEY = "x-dead-letter-exchange";
 
     @Autowired
     private ConnectionFactory cachingConnectionFactory;
 
     @Bean
     Queue queueWithDlxTimeToLive() {
-        Map<String, Object> args = new HashMap<String, Object>();
+        Map<String, Object> args = new HashMap<>();
 
         // The default exchange
-        args.put("x-dead-letter-exchange", "");
+        args.put(X_DEAD_LETTER_EXCHANGE_KEY, "");//using the defalt exchange, requires a routing key
         // Route to the incoming queue when the TTL occurs
-        args.put("x-dead-letter-routing-key", QUEUE_WITH_A_DLX_DLX);
+        args.put(X_DEAD_LETTER_EXCHANGE_KEY, QUEUE_WITH_A_DLX_DLX);
         // TTL 5 seconds
         args.put("x-message-ttl", 5000);//try without this for a test
         return new Queue(QUEUE_WITH_A_DLX, false, false, false, args);
@@ -48,12 +49,12 @@ public class DeadLetterQueuesConfig {
 
     @Bean
     Queue simplePojoProgrammaticDlx() {
-        Map<String, Object> args = new HashMap<String, Object>();
+        Map<String, Object> args = new HashMap<>();
 
         // The default exchange
-        args.put("x-dead-letter-exchange", "");
+        args.put(X_DEAD_LETTER_EXCHANGE_KEY, "");//using the defalt exchange, requires a routing key
         // Route to the incoming queue when the exception occurs
-        args.put("x-dead-letter-routing-key", DLX_FOR_SIMPLE_POJO_PROGRAMTTIC_DLX);
+        args.put("x-dead-letter-routing-key", DLX_FOR_SIMPLE_POJO_PROGRAMTTIC_DLX);//note this matches an existing queuename
         return new Queue(SIMPLE_POJO_PROGRAMMATIC_DLX, false, false, false, args);
     }
 
@@ -85,5 +86,24 @@ public class DeadLetterQueuesConfig {
                                                            MessageListenerAdapter programaticErrorToDlxAdapter) {
         return AmqpConfig.getSimpleMessageListenerContainer(connectionFactory, programaticErrorToDlxAdapter,
                 SIMPLE_POJO_PROGRAMMATIC_DLX);
+    }
+
+
+    /* This is the receiver that always throws an RuntimeException */
+    @Bean
+    Queue queueReceiverAlwaysThrowsException() {
+        Map<String, Object> args = new HashMap<>();
+
+        // The default exchange
+        args.put(X_DEAD_LETTER_EXCHANGE_KEY, "");
+        // Route to the incoming queue when the TTL occurs
+        args.put("x-dead-letter-routing-key", DLX_QUEUE_FOR_RUNTIME_EXCEPTION);
+        // TTL 5 seconds
+        return new Queue("Queue-that-always-throws-runtime-exception", false, false, false, args);
+    }
+
+    @Bean
+    Queue dlxQueueForRuntimeExcpeeitonQueue() {
+        return new Queue(DLX_QUEUE_FOR_RUNTIME_EXCEPTION);
     }
 }
