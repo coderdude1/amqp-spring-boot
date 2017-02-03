@@ -157,7 +157,19 @@ http://stackoverflow.com/questions/28286334/spring-amqp-nothing-showing-up-in-de
 ### Routing keys and Dead Letter Stuff
 http://stackoverflow.com/questions/21742232/rabbitmq-dead-letter-exchange-never-getting-messages
 
+### Understanding RabbitMQ Exchange and Queues
+http://teddyma.cn/2016/02/22/understanding-rabbitmq-exchange-and-queue/
+
+### RabbitMQ Exchange and Queue Design tradeoff
+http://teddyma.cn/2016/02/23/rabbitmq-exchange-design-tradeoffs/
+
+### RabbitMQ HA with Pacemaker
+https://www.rabbitmq.com/pacemaker.html
+
 ## Poison Mesaages
 http://kjnilsson.github.io/blog/2014/01/30/spread-the-poison/
 http://tafakari.co.ke/2014/07/rabbitmq-poison-messages/
 
+
+# TODO
+1.  send a message with a null routing key, what happens?

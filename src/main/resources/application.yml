@@ -1,0 +1,7 @@
+info:
+  description: "Experiments with RabbitMQ and Spring"
+  apiDocumentation: "blargh"
+
+logging:
+  level:
+    org.springframework.web: TRACE
