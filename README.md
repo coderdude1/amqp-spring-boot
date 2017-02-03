@@ -163,8 +163,15 @@ http://teddyma.cn/2016/02/22/understanding-rabbitmq-exchange-and-queue/
 ### RabbitMQ Exchange and Queue Design tradeoff
 http://teddyma.cn/2016/02/23/rabbitmq-exchange-design-tradeoffs/
 
-### RabbitMQ HA with Pacemaker
+### RabbitMQ HA
 https://www.rabbitmq.com/pacemaker.html
+http://www.rabbitmq.com/ha.html
+
+### Reliability and RabbitMQ
+http://www.rabbitmq.com/reliability.html
+
+### Firehose and tracing messages through the system
+http://www.rabbitmq.com/ha.html
 
 ## Poison Mesaages
 http://kjnilsson.github.io/blog/2014/01/30/spread-the-poison/
